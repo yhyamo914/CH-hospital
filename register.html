@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل حساب - متجر الكمبيوتر</title>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyCxZZ4dYqrxJ_rlMcXmZhx5Kwg_ZeYnYog",
+    authDomain: "computer-store-4c946.firebaseapp.com",
+    projectId: "computer-store-4c946",
+    storageBucket: "computer-store-4c946.appspot.com",
+    messagingSenderId: "77513680070",
+    appId: "1:77513680070:web:2d2c080956a16587c4a3c7"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+</script>
+
+<style>
+body{font-family:'Poppins',sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;background:#f0f2f5;}
+.container{background:white;padding:40px;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.1);width:320px;}
+h2{text-align:center;margin-bottom:20px;color:#4361ee;}
+input{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #ccc;}
+button{width:100%;padding:12px;background:#4361ee;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;}
+button:hover{background:#4cc9f0;}
+.message{color:red;text-align:center;margin-top:10px;}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>إنشاء حساب جديد</h2>
+<input type="text" id="name" placeholder="الاسم الكامل">
+<input type="email" id="email" placeholder="البريد الإلكتروني">
+<input type="password" id="password" placeholder="كلمة المرور">
+<button id="registerBtn">تسجيل</button>
+<p class="message" id="msg"></p>
+<p style="text-align:center;margin-top:10px;">لديك حساب؟ <a href="login.html">تسجيل الدخول</a></p>
+</div>
+
+<script>
+document.getElementById('registerBtn').addEventListener('click', async ()=>{
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const msg = document.getElementById('msg');
+    msg.textContent = '';
+
+    if(!name || !email || !password){
+        msg.textContent = "يرجى ملء جميع الحقول";
+        return;
+    }
+
+    try{
+        // إنشاء المستخدم في Firebase Auth
+        const userCredential = await auth.createUserWithEmailAndPassword(email,password);
+        const user = userCredential.user;
+
+        // حفظ بيانات المستخدم في Firestore مع الدور الافتراضي "user"
+        await db.collection('users').doc(user.uid).set({
+            name,
+            email,
+            role: "user",
+            createdAt: Date.now()
+        });
+
+        // إعادة التوجيه إلى المتجر
+        window.location.href = "index.html";
+
+    } catch(err){
+        msg.textContent = err.message;
+    }
+});
+</script>
+</body>
+</html>

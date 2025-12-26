@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>جميع المنتجات | متجر الكمبيوتر</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --primary:#4361ee;
+    --accent:#4cc9f0;
+    --dark:#111827;
+    --light:#f8fafc;
+    --radius:18px;
+    --shadow:0 12px 30px rgba(0,0,0,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{
+    background:var(--light);
+    color:var(--dark);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    margin-bottom:80px; /* مساحة أسفل للشريط السفلي */
+}
+/* ===== TOP BAR ===== */
+.topbar{
+    position:fixed;
+    top:0;
+    right:0;
+    left:0;
+    background:white;
+    box-shadow:0 6px 20px rgba(0,0,0,.08);
+    z-index:1000;
+}
+.topbar-container{
+    max-width:1200px;
+    margin:auto;
+    padding:14px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+.logo{
+    font-weight:700;
+    font-size:20px;
+    color:var(--primary);
+    text-decoration:none;
+}
+.nav{
+    display:flex;
+    gap:18px;
+}
+.nav a{
+    text-decoration:none;
+    color:#374151;
+    font-weight:600;
+}
+.nav a:hover{color:var(--primary)}
+/* ===== PAGE ===== */
+.page{padding-top:90px;flex:1;}
+.container{max-width:1200px;margin:auto;padding:20px;}
+h1{text-align:center;color:var(--primary);margin-bottom:25px;}
+/* ===== FILTERS ===== */
+.filters{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin-bottom:30px;
+    flex-wrap:wrap;
+}
+.filters button{
+    padding:10px 22px;
+    border:none;
+    border-radius:50px;
+    background:#e5e7eb;
+    font-weight:600;
+    cursor:pointer;
+}
+.filters button.active,
+.filters button:hover{
+    background:linear-gradient(90deg,var(--primary),var(--accent));
+    color:white;
+}
+/* ===== DROPDOWN ===== */
+.dropdown{position:relative;display:inline-block;}
+.dropbtn{
+    padding:10px 22px;
+    border:none;
+    border-radius:50px;
+    background:#e5e7eb;
+    font-weight:600;
+    cursor:pointer;
+}
+.dropbtn.active,
+.dropbtn:hover{
+    background:linear-gradient(90deg,var(--primary),var(--accent));
+    color:white;
+}
+.dropdown-content{
+    display:none;
+    position:absolute;
+    background:#f8fafc;
+    min-width:160px;
+    box-shadow:0 6px 12px rgba(0,0,0,.15);
+    border-radius:12px;
+    z-index:100;
+    flex-direction:column;
+    overflow:hidden;
+}
+.dropdown-content button{
+    background:white;
+    color:#374151;
+    padding:10px 16px;
+    border:none;
+    text-align:right;
+    width:100%;
+    cursor:pointer;
+}
+.dropdown-content button:hover{
+    background:linear-gradient(90deg,var(--primary),var(--accent));
+    color:white;
+}
+.dropdown:hover .dropdown-content{display:flex;}
+/* ===== PRODUCTS ===== */
+.products-wrapper{display:flex;justify-content:center;}
+.products-grid{width:100%;max-width:1000px;display:flex;flex-direction:column;gap:20px;}
+.products-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:10px;scroll-behavior: smooth;}
+.product-card{
+    background:white;
+    width:180px;
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    cursor:pointer;
+    transition:.3s;
+    flex-shrink:0;
+}
+.product-card:hover{transform:translateY(-6px)}
+.product-card img{width:100%;height:140px;object-fit:cover;}
+.product-info{padding:14px;text-align:center;}
+.product-info h3{font-size:15px;margin-bottom:8px;}
+.price{color:var(--primary);font-weight:700;}
+/* ===== MODAL ===== */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:2000;}
+.modal.show{display:flex}
+.modal-content{
+    background:white;
+    width:95%;
+    max-width:700px;
+    border-radius:20px;
+    padding:22px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+.close{position:absolute;top:15px;left:15px;font-size:22px;cursor:pointer;}
+.modal-images{display:flex;overflow-x:auto;gap:10px;scroll-behavior: smooth;}
+.modal-images img{height:260px;border-radius:14px;object-fit:cover;}
+.modal-nav{display:flex;justify-content:space-between;margin-top:8px;}
+.modal-nav button{padding:8px 14px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;}
+.modal-body{margin-top:8px}
+.modal-body h2{color:var(--primary);margin-bottom:10px}
+.actions{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;}
+.btn{flex:1;padding:12px;border-radius:50px;text-align:center;color:white;font-weight:600;text-decoration:none;}
+.whatsapp{background:#25d366}
+.book{background:linear-gradient(90deg,var(--primary),var(--accent))}
+/* ===== FOOTER ===== */
+footer{
+    background:#111827;
+    color:#e5e7eb;
+    padding:40px 20px 20px;
+}
+.footer-container{
+    max-width:1200px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:30px;
+}
+.footer-box h3{color:#4cc9f0;margin-bottom:12px}
+.footer-box p,
+.footer-box a{
+    color:#d1d5db;
+    font-size:14px;
+    line-height:1.8;
+    text-decoration:none;
+}
+.footer-bottom{text-align:center;margin-top:20px;border-top:1px solid #374151;padding-top:12px;font-size:13px;}
+/* ===== MOBILE ===== */
+@media(max-width:600px){.nav{display:none}.products-row{flex-wrap:nowrap;overflow-x:auto;}}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{
+    display:flex;
+    position:fixed;
+    bottom:0;
+    width:100%;
+    background:#fff;
+    justify-content:space-around;
+    padding:6px 0;
+    box-shadow:0 -2px 12px rgba(0,0,0,.1);
+    z-index:1000;
+}
+.bottom-nav a{
+    text-decoration:none;
+    color:#333;
+    font-size:24px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    padding:8px 0;
+}
+.bottom-nav a i{
+    font-size:22px;
+    margin-bottom:2px;
+}
+.cart-badge{
+    position:absolute;
+    top:0;
+    right:6px;
+    background:red;
+    color:#fff;
+    font-size:10px;
+    padding:1px 6px;
+    border-radius:50%;
+    display:none;
+}
+@media(min-width:1025px){.bottom-nav{display:none}}
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-container">
+        <a href="index.html" class="logo">💻 CH-hospital </a>
+        <div class="nav">
+            <a href="index.html">الرئيسية</a>
+            <a href="products.html">المنتجات</a>
+            <a href="appointment.html">حجز موعد</a>
+        </div>
+    </div>
+</div>
+
+<div class="page">
+<div class="container">
+    <h1>جميع المنتجات</h1>
+    <div class="filters">
+        <button class="active" data-cat="all">الكل</button>
+        <button data-cat="أجهزة الكمبيوتر">أجهزة الكمبيوتر</button>
+        <button data-cat="أجهزة اللابتوب">أجهزة اللابتوب</button>
+        <div class="dropdown">
+            <button class="dropbtn" data-cat="الإكسسوارات">الإكسسوارات ▼</button>
+            <div class="dropdown-content">
+                <button data-cat="كيبورد">كيبورد</button>
+                <button data-cat="ماوس">ماوس</button>
+                <button data-cat="سماعات">سماعات</button>
+                <button data-cat="لوحات مفاتيح">لوحات مفاتيح</button>
+                <button data-cat="كابلات">كابلات</button>
+                <button data-cat="أجهزة التخزين">أجهزة التخزين</button>
+            </div>
+        </div>
+        <button data-cat="كاميرات المراقبة">كاميرات المراقبة</button>
+    </div>
+
+    <div class="products-wrapper">
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+</div>
+</div>
+
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">✖</span>
+        <div class="modal-images" id="mImages"></div>
+        <div class="modal-nav">
+            <button id="prevBtn">السابق</button>
+            <button id="nextBtn">التالي</button>
+        </div>
+        <div class="modal-body">
+            <h2 id="mName"></h2>
+            <p><strong>السعر:</strong> <span id="mPrice"></span> ج.م</p>
+            <p><strong>القسم:</strong> <span id="mCat"></span></p>
+            <p id="mDesc"></p>
+            <div class="actions">
+                <a id="waBtn" class="btn whatsapp" target="_blank">واتساب</a>
+                <a href="appointment.html" class="btn book">حجز موعد</a>
+                <a id="cartBtn" class="btn book">أضف للعربة</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-box">
+            <h3>من نحن</h3>
+            <p>متجر متخصص في أجهزة الكمبيوتر والإكسسوارات.</p>
+        </div>
+        <div class="footer-box">
+            <h3>التواصل</h3>
+            <p>📞 <a href="tel:201120400187">+20 112 040 0187</a></p>
+        </div>
+        <div class="footer-box">
+            <h3>ديسكورد</h3>
+            <a href="#" target="_blank">discord.gg/YOUR_SERVER</a>
+        </div>
+    </div>
+    <div class="footer-bottom">© 2025 متجر الكمبيوتر</div>
+</footer>
+
+<!-- Bottom Nav -->
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <a href="index.html"><i class="fas fa-home"></i><span>الرئيسية</span></a>
+  <a href="products.html"><i class="fas fa-laptop"></i><span>المنتجات</span></a>
+  <a href="cart.html"><i class="fas fa-shopping-cart"></i><span>العربة</span><span id="cartCount" class="cart-badge">0</span></a>
+  <a href="appointment.html"><i class="fas fa-calendar"></i><span>موعد</span></a>
+  <a href="profile.html" id="profileNav"><i class="fas fa-user"></i><span>حسابي</span></a>
+  <a href="admin.html" id="adminNav" style="display:none"><i class="fas fa-cogs"></i><span>لوحة التحكم</span></a>
+</div>
+
+<script>
+firebase.initializeApp({
+    apiKey:"AIzaSyCxZZ4dYqrxJ_rlMcXmZhx5Kwg_ZeYnYog",
+    authDomain:"computer-store-4c946.firebaseapp.com",
+    projectId:"computer-store-4c946"
+});
+const db=firebase.firestore();
+const auth=firebase.auth();
+const grid=document.getElementById("productsGrid");
+const modal=document.getElementById("modal");
+let products=[];
+let currentImageIndex=0;
+let currentProduct=null;
+
+// localStorage helpers
+function getLocalCart(){ return JSON.parse(localStorage.getItem("cart")) || {}; }
+function saveLocalCart(c){ localStorage.setItem("cart", JSON.stringify(c)); }
+
+// إضافة للعربة
+function addToCart(product){
+    auth.onAuthStateChanged(async user=>{
+        if(user){
+            const cartRef = db.collection("users").doc(user.uid).collection("cart");
+            const doc = await cartRef.where("name","==",product.name).get();
+            if(!doc.empty){
+                const id=doc.docs[0].id;
+                const prevQty=doc.docs[0].data().quantity || 1;
+                await cartRef.doc(id).update({quantity: prevQty+1});
+            }else{
+                await cartRef.add({
+                    name: product.name,
+                    price: product.price,
+                    category: product.category,
+                    image: product.image || (product.images && product.images[0]) || "",
+                    quantity:1,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+            alert("تم إضافة المنتج للعربة!");
+        }else{
+            const cart=getLocalCart();
+            if(cart[product.name]){
+                cart[product.name].quantity +=1;
+            }else{
+                cart[product.name]={
+                    name: product.name,
+                    price: product.price,
+                    category: product.category,
+                    image: product.image || (product.images && product.images[0]) || "",
+                    quantity:1
+                };
+            }
+            saveLocalCart(cart);
+            alert("تم إضافة المنتج للعربة!");
+        }
+    });
+}
+
+function openModal(p){
+    currentProduct=p;
+    const mImages=document.getElementById("mImages");
+    mImages.innerHTML="";
+    if(p.images && p.images.length){
+        p.images.forEach(url=>{
+            const img=document.createElement("img");
+            img.src=url;
+            mImages.appendChild(img);
+        });
+    }else if(p.image){
+        const img=document.createElement("img");
+        img.src=p.image;
+        mImages.appendChild(img);
+    }
+    currentImageIndex=0;
+    showImage(currentImageIndex);
+
+    document.getElementById("mName").textContent=p.name;
+    document.getElementById("mPrice").textContent=p.price;
+    document.getElementById("mCat").textContent=p.category;
+    document.getElementById("mDesc").textContent=p.desc||"";
+    document.getElementById("waBtn").href=`https://wa.me/201120400187?text=${encodeURIComponent(p.name)}`;
+
+    modal.classList.add("show");
+
+    document.getElementById("prevBtn").onclick=()=>prevImage();
+    document.getElementById("nextBtn").onclick=()=>nextImage();
+    document.getElementById("cartBtn").onclick=()=>addToCart(p);
+}
+
+function closeModal(){modal.classList.remove("show");}
+function showImage(index){
+    const imgs=document.querySelectorAll("#mImages img");
+    imgs.forEach((img,i)=>img.style.display=(i===index)?"block":"none");
+}
+function prevImage(){
+    const imgs=document.querySelectorAll("#mImages img");
+    if(imgs.length===0)return;
+    currentImageIndex=(currentImageIndex-1+imgs.length)%imgs.length;
+    showImage(currentImageIndex);
+}
+function nextImage(){
+    const imgs=document.querySelectorAll("#mImages img");
+    if(imgs.length===0)return;
+    currentImageIndex=(currentImageIndex+1)%imgs.length;
+    showImage(currentImageIndex);
+}
+
+function render(cat="all"){
+    grid.innerHTML="";
+    let filtered=products.slice();
+    if(cat==="all"){
+        const grouped={};
+        filtered.forEach(p=>{
+            const key=p.category;
+            if(!grouped[key])grouped[key]=[];
+            grouped[key].push(p);
+        });
+        for(const key in grouped){
+            const title=document.createElement("h4");
+            title.textContent=key;
+            title.style.color="#4361ee";
+            title.style.margin="10px 0 5px 0";
+            grid.appendChild(title);
+
+            if(key==="الإكسسوارات"){
+                const subGrouped={};
+                grouped[key].forEach(p=>{
+                    const subKey=p.subCategory || p.name.toLowerCase().includes("كيبورد")?"كيبورد":p.name.toLowerCase().includes("ماوس")?"ماوس":"فرع غير محدد";
+                    if(!subGrouped[subKey]) subGrouped[subKey]=[];
+                    subGrouped[subKey].push(p);
+                });
+                for(const subKey in subGrouped){
+                    const subTitle=document.createElement("h5");
+                    subTitle.textContent=subKey;
+                    subTitle.style.color="#4cc9f0";
+                    subTitle.style.margin="5px 0";
+                    grid.appendChild(subTitle);
+
+                    const subRow=document.createElement("div");
+                    subRow.className="products-row";
+                    subGrouped[subKey].forEach(p=>{
+                        const c=document.createElement("div");
+                        c.className="product-card";
+                        c.innerHTML=`<img src="${p.image||p.images[0]}"><div class="product-info"><h3>${p.name}</h3><div class="price">${p.price} ج.م</div></div>`;
+                        c.onclick=()=>openModal(p);
+                        subRow.appendChild(c);
+                    });
+                    grid.appendChild(subRow);
+                }
+            }else{
+                const row=document.createElement("div");
+                row.className="products-row";
+                grouped[key].forEach(p=>{
+                    const c=document.createElement("div");
+                    c.className="product-card";
+                    c.innerHTML=`<img src="${p.image||p.images[0]}"><div class="product-info"><h3>${p.name}</h3><div class="price">${p.price} ج.م</div></div>`;
+                    c.onclick=()=>openModal(p);
+                    row.appendChild(c);
+                });
+                grid.appendChild(row);
+            }
+        }
+    }else if(cat==="الإكسسوارات" || ["كيبورد","ماوس","سماعات","لوحات مفاتيح","كابلات","أجهزة التخزين"].includes(cat)){
+        filtered=filtered.filter(p=>p.category==="الإكسسوارات");
+        if(cat!=="الإكسسوارات"){
+            filtered=filtered.filter(p=>(p.subCategory||p.name).toLowerCase().includes(cat.toLowerCase()));
+        }
+        const row=document.createElement("div");
+        row.className="products-row";
+        filtered.forEach(p=>{
+            const c=document.createElement("div");
+            c.className="product-card";
+            c.innerHTML=`<img src="${p.image||p.images[0]}"><div class="product-info"><h3>${p.name}</h3><div class="price">${p.price} ج.م</div></div>`;
+            c.onclick=()=>openModal(p);
+            row.appendChild(c);
+        });
+        grid.appendChild(row);
+    }else{
+        filtered=filtered.filter(p=>p.category===cat);
+        const row=document.createElement("div");
+        row.className="products-row";
+        filtered.forEach(p=>{
+            const c=document.createElement("div");
+            c.className="product-card";
+            c.innerHTML=`<img src="${p.image||p.images[0]}"><div class="product-info"><h3>${p.name}</h3><div class="price">${p.price} ج.م</div></div>`;
+            c.onclick=()=>openModal(p);
+            row.appendChild(c);
+        });
+        grid.appendChild(row);
+    }
+}
+
+// جلب المنتجات من Firebase
+db.collection("products").get().then(s=>{
+    s.forEach(d=>{
+        let data=d.data();
+        if(data.image && !data.images) data.images=[data.image];
+        products.push(data);
+    });
+    render();
+});
+
+// فرز حسب الأقسام
+document.querySelectorAll(".filters button, .dropdown-content button").forEach(b=>{
+    b.onclick=()=>{
+        document.querySelectorAll(".filters button, .dropdown-content button").forEach(x=>x.classList.remove("active"));
+        b.classList.add("active");
+        render(b.dataset.cat);
+    }
+});
+
+// تحديث عداد العربة
+function updateCartCount(){
+    const cart=getLocalCart();
+    let count=0;
+    for(const key in cart) count += cart[key].quantity;
+    const badge=document.getElementById("cartCount");
+    badge.textContent=count;
+    badge.style.display = count>0?"block":"none";
+}
+updateCartCount();
+</script>
+<script>
+// تحديث حالة تسجيل الدخول والمشرف
+auth.onAuthStateChanged(async user=>{
+    const profileM = document.getElementById("profileNav");
+    const adminM = document.getElementById("adminNav");
+
+    if(user){
+        profileM.style.display="flex"; // دائمًا يظهر للمستخدم
+        const u = await db.collection("users").doc(user.uid).get();
+        if(u.exists && u.data().role==="admin"){
+            adminM.style.display="flex"; // يظهر فقط إذا كان Admin
+        } else {
+            adminM.style.display="none";
+        }
+    } else {
+        profileM.style.display="none";
+        adminM.style.display="none";
+    }
+});
+</script>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>

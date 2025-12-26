@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>عربة التسوق | متجر الكمبيوتر</title>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<style>
+:root{
+    --primary:#4361ee;
+    --success:#2a9d8f;
+    --warning:#f4a261;
+    --error:#e63946;
+    --dark:#212529;
+    --light:#f4f6f9;
+}
+body{
+    font-family:'Segoe UI',Tahoma;
+    background:var(--light);
+    margin:0 0 80px 0; /* مساحة أسفل للـ Bottom Nav */
+}
+.navbar{
+    background:white;
+    box-shadow:0 2px 15px rgba(0,0,0,.1);
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+.navbar .container{
+    max-width:1100px;
+    margin:auto;
+    padding:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.logo{
+    font-size:22px;
+    font-weight:500;
+    color:var(--primary);
+    text-decoration:none;
+}
+.nav-links{
+    list-style:none;
+    display:flex;
+    gap:15px;
+}
+.nav-links a{
+    text-decoration:none;
+    color:#333;
+    padding:8px 14px;
+    border-radius:8px;
+}
+.nav-links a:hover{
+    background:var(--primary);
+    color:white;
+}
+.btn{
+    background:var(--primary);
+    color:white !important;
+}
+.cart-container{
+    max-width:900px;
+    margin:40px auto 80px;
+    background:white;
+    border-radius:15px;
+    padding:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,.1);
+    overflow-x:auto;
+}
+.cart-title{
+    text-align:center;
+    color:var(--primary);
+    margin-bottom:30px;
+}
+.cart-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:15px 0;
+    border-bottom:1px solid #eee;
+    transition:all 0.3s ease;
+}
+.cart-info{
+    flex:1;
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+.cart-info img{
+    width:80px;
+    height:80px;
+    object-fit:cover;
+    border-radius:8px;
+}
+.cart-info h4{
+    margin:0 0 5px;
+}
+.cart-info p{
+    margin:0;
+    color:#666;
+}
+.remove-btn{
+    background:var(--error);
+    border:none;
+    color:white;
+    padding:6px 12px;
+    border-radius:6px;
+    cursor:pointer;
+}
+.total{
+    margin-top:25px;
+    font-size:20px;
+    font-weight:bold;
+    text-align:left;
+}
+.cart-actions{
+    display:flex;
+    justify-content:space-between;
+    margin-top:20px;
+}
+.cart-actions a,
+.cart-actions button{
+    padding:12px 20px;
+    border-radius:8px;
+    border:none;
+    cursor:pointer;
+    text-decoration:none;
+    font-weight:600;
+}
+.back{
+    background:#6c757d;
+    color:white;
+}
+.checkout{
+    background:var(--success);
+    color:white;
+}
+.empty{
+    text-align:center;
+    color:#999;
+    padding:40px;
+}
+.quantity-controls{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-top:5px;
+}
+.quantity-controls button{
+    width:24px; height:24px; border:none; border-radius:4px;
+    cursor:pointer; font-weight:bold; background:var(--primary); color:white;
+}
+
+/* نموذج البيانات */
+#checkoutForm{
+    display:none;
+    margin-top:20px;
+    padding:20px;
+    background:#f1f1f1;
+    border-radius:10px;
+}
+#checkoutForm input, #checkoutForm textarea{
+    width:100%;
+    margin-bottom:10px;
+    padding:10px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+#checkoutForm button{
+    width:100%;
+    background:var(--success);
+    color:white;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+/* toast notifications */
+#toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.toast-message {
+    color:white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    opacity: 0;
+    animation: fadein 0.5s forwards, fadeout 0.5s 2.5s forwards;
+}
+.toast-success{ background:var(--success); }
+.toast-warning{ background:var(--warning); }
+.toast-error{ background:var(--error); }
+@keyframes fadein {
+    from {opacity:0; transform:translateY(20px);}
+    to {opacity:1; transform:translateY(0);}
+}
+@keyframes fadeout {
+    from {opacity:1; transform:translateY(0);}
+    to {opacity:0; transform:translateY(20px);}
+}
+
+/* Bottom Nav */
+.bottom-nav{
+    display:flex;
+    position:fixed;
+    bottom:0;
+    width:100%;
+    background:#fff;
+    justify-content:space-around;
+    padding:6px 0;
+    box-shadow:0 -2px 12px rgba(0,0,0,.1);
+    z-index:1000;
+}
+.bottom-nav a{
+    text-decoration:none;
+    color:#333;
+    font-size:24px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    padding:8px 0;
+}
+.bottom-nav a i{
+    font-size:22px;
+    margin-bottom:2px;
+}
+.cart-badge{
+    position:absolute;
+    top:0;
+    right:6px;
+    background:red;
+    color:#fff;
+    font-size:10px;
+    padding:1px 6px;
+    border-radius:50%;
+    display:none;
+}
+@media(max-width:600px){
+    .cart-item{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+    .cart-actions{
+        flex-direction:column;
+        gap:10px;
+    }
+    .quantity-controls{
+        justify-content:flex-start;
+    }
+}
+@media(min-width:1025px){
+    .bottom-nav{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">CH-hospital </a>
+    <ul class="nav-links">
+      <li><a href="index.html">الرئيسية</a></li>
+      <li><a href="products.html">المنتجات</a></li>
+      <li><a href="cart.html" class="btn"><i class="fas fa-shopping-cart"></i> </a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="cart-container">
+    <h2 class="cart-title">🛒 عربة التسوق</h2>
+    <div id="cart"></div>
+
+    <form id="checkoutForm">
+        <h3>معلومات الشحن</h3>
+        <input type="text" id="phone" placeholder="رقم الهاتف" required>
+        <textarea id="address" placeholder="العنوان" required></textarea>
+        <button type="submit">إتمام الشراء</button>
+    </form>
+</div>
+
+<div id="toast"></div>
+
+
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyCxZZ4dYqrxJ_rlMcXmZhx5Kwg_ZeYnYog",
+  authDomain: "computer-store-4c946.firebaseapp.com",
+  projectId: "computer-store-4c946",
+});
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+function showToast(msg,type='success'){
+    const toast=document.createElement("div");
+    toast.className=`toast-message toast-${type}`;
+    toast.textContent=msg;
+    document.getElementById("toast").appendChild(toast);
+    setTimeout(()=>toast.remove(),3000);
+}
+
+async function renderCart(){
+    const box=document.getElementById("cart");
+    const form=document.getElementById("checkoutForm");
+    let total=0;
+    box.innerHTML="";
+    form.style.display="none";
+
+    const user=auth.currentUser;
+    if(!user){
+        box.innerHTML=`<p class="empty">يجب تسجيل الدخول للوصول للعربة</p>
+                       <a href="login.html" class="back">⬅ تسجيل الدخول</a>`;
+        return;
+    }
+
+    const snap = await db.collection("users").doc(user.uid).collection("cart").get();
+    if(snap.empty){
+        box.innerHTML=`<p class="empty">العربة فارغة</p>`;
+        updateCartBadge();
+        return;
+    }
+
+    let items = [];
+    snap.forEach(d=>items.push({id:d.id,...d.data()}));
+
+    items.forEach(i=>{
+        total += i.price*(i.quantity||1);
+        const div=document.createElement("div");
+        div.className="cart-item";
+        div.innerHTML=`
+            <div class="cart-info">
+                <img src="${i.image||'https://via.placeholder.com/80'}">
+                <div>
+                    <h4>${i.name}</h4>
+                    <p>${i.price} ج.م × ${i.quantity||1}</p>
+                    <div class="quantity-controls">
+                        <button onclick="updateQuantity('${i.id}',-1)">-</button>
+                        <span>${i.quantity||1}</span>
+                        <button onclick="updateQuantity('${i.id}',1)">+</button>
+                    </div>
+                </div>
+            </div>
+            <button class="remove-btn" onclick="removeItem('${i.id}')">حذف</button>
+        `;
+        box.appendChild(div);
+    });
+
+    box.innerHTML += `<div class="total">الإجمالي: ${total.toFixed(2)} ج.م</div>
+                      <div class="cart-actions">
+                        <a href="products.html" class="back">⬅ متابعة التسوق</a>
+                        <button class="checkout" onclick="showCheckoutForm()">إتمام الشراء</button>
+                      </div>`;
+
+    updateCartBadge();
+}
+
+async function updateQuantity(id, delta){
+    const u = auth.currentUser;
+    const docRef = db.collection("users").doc(u.uid).collection("cart").doc(id);
+    const doc = await docRef.get();
+    if(!doc.exists) return;
+    const q=(doc.data().quantity||1)+delta;
+    if(q<1) return removeItem(id);
+    await docRef.update({quantity:q});
+    renderCart();
+    showToast(`تم تعديل الكمية إلى ${q}`,'success');
+}
+
+async function removeItem(id){
+    const u = auth.currentUser;
+    await db.collection("users").doc(u.uid).collection("cart").doc(id).delete();
+    renderCart();
+    showToast("تم حذف المنتج من العربة",'error');
+}
+
+function showCheckoutForm(){
+    document.getElementById("checkoutForm").style.display="block";
+}
+
+document.getElementById("checkoutForm").addEventListener("submit",async e=>{
+    e.preventDefault();
+    const user = auth.currentUser;
+    if(!user) return;
+
+    const phone=document.getElementById("phone").value||'غير محدد';
+    const address=document.getElementById("address").value||'غير محدد';
+
+    const cartSnap = await db.collection("users").doc(user.uid).collection("cart").get();
+    if(cartSnap.empty){
+        showToast("العربة فارغة!","warning");
+        renderCart();
+        return;
+    }
+
+    let cartItems=[]; let total=0;
+    cartSnap.forEach(d=>{
+        const data=d.data();
+        cartItems.push({
+            id:d.id,
+            name:data.name,
+            price:data.price,
+            qty:data.quantity||1,
+            image:data.image||''
+        });
+        total += data.price*(data.quantity||1);
+    });
+
+    const customerEmail=user.email||'غير محدد';
+    let customerName=user.displayName||customerEmail.split('@')[0];
+
+    await db.collection("orders").add({
+        name:customerName,
+        email:customerEmail,
+        phone,
+        address,
+        items:cartItems,
+        total,
+        status:'pending',
+        createdAt:Date.now()
+    });
+
+    showToast("تم إرسال الطلب! سيتم التواصل معك لتأكيد الشراء.",'success');
+    cartSnap.forEach(d=>d.ref.delete());
+    renderCart();
+});
+
+async function updateCartBadge(){
+    const user = auth.currentUser;
+    const badge = document.getElementById("cartCount");
+    if(!user){
+        badge.style.display="none";
+        return;
+    }
+    const snap = await db.collection("users").doc(user.uid).collection("cart").get();
+    const count = snap.size;
+    if(count>0){
+        badge.textContent = count;
+        badge.style.display="block";
+    } else {
+        badge.style.display="none";
+    }
+}
+
+auth.onAuthStateChanged(async user=>{
+    renderCart();
+    const profileM = document.getElementById("profileNav");
+    const adminM = document.getElementById("adminNav");
+
+    if(user){
+        profileM.style.display="flex";
+        const u = await db.collection("users").doc(user.uid).get();
+        if(u.exists && u.data().role==="admin"){
+            adminM.style.display="flex";
+        }
+    } else {
+        profileM.style.display="none";
+        adminM.style.display="none";
+    }
+});
+</script>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <a href="index.html"><i class="fas fa-home"></i><span>الرئيسية</span></a>
+  <a href="products.html"><i class="fas fa-laptop"></i><span>المنتجات</span></a>
+  <a href="cart.html"><i class="fas fa-shopping-cart"></i><span>العربة</span><span id="cartCount" class="cart-badge">0</span></a>
+  <a href="profile.html" id="profileNav" style="display:none"><i class="fas fa-user"></i><span>حسابي</span></a>
+  <a href="admin.html" id="adminNav" style="display:none"><i class="fas fa-cogs"></i><span>لوحة التحكم</span></a>
+</div>
+
+</body>
+</html>

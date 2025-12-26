@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CH-hospital</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root{
+    --primary:#4361ee;
+    --accent:#4cc9f0;
+    --dark:#212529;
+    --light:#f8f9fa;
+}
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:'Segoe UI',Tahoma;
+    background:var(--light);
+    color:var(--dark);
+    overflow-x:hidden;
+}
+.container{max-width:1200px;margin:auto;padding:15px}
+
+/* NAVBAR */
+.navbar{
+    background:#fff;
+    position:sticky;
+    top:0;
+    z-index:1000;
+    box-shadow:0 2px 15px rgba(0,0,0,.1)
+}
+.navbar .container{
+    display:flex;
+    align-items:center;
+    justify-content:space-between
+}
+.logo{
+    font-size:24px;
+    font-weight:700;
+    color:var(--primary);
+    text-decoration:none
+}
+.nav-links{
+    list-style:none;
+    display:flex;
+    gap:20px;
+    padding:0;
+    margin:0
+}
+.nav-links a{
+    text-decoration:none;
+    color:#333;
+    padding:8px 12px;
+    border-radius:8px;
+    font-weight:500
+}
+.nav-links a:hover{
+    background:var(--primary);
+    color:#fff
+}
+
+/* DESKTOP ACTIONS */
+.nav-actions{
+    display:flex;
+    align-items:center;
+    gap:14px
+}
+.nav-icon{
+    position:relative;
+    color:#333;
+    font-size:18px;
+    padding:8px;
+    border-radius:8px;
+    transition:.3s
+}
+.nav-icon:hover{
+    background:var(--primary);
+    color:#fff
+}
+.badge{
+    position:absolute;
+    top:-4px;
+    right:-4px;
+    background:red;
+    color:#fff;
+    font-size:11px;
+    padding:2px 6px;
+    border-radius:50%;
+    display:none
+}
+
+/* HERO */
+.hero{
+    background:linear-gradient(135deg,#4361ee,#3a0ca3);
+    color:#fff;
+    text-align:center;
+    padding:100px 20px
+}
+.hero-title-bg{
+    display:inline-block;
+    padding:120px 180px;
+    border-radius:32px;
+    background:rgba(255,255,255,.12);
+    backdrop-filter:blur(12px);
+    position:relative;
+    overflow:hidden
+}
+.hero-title-bg::before{
+    content:"";
+    position:absolute;
+    inset:-200px;
+    background:url("LOGO.jpeg") center/contain no-repeat;
+    opacity:.3;
+}
+.hero-title-bg h1,
+.hero-title-bg p{position:relative;z-index:1}
+
+/* CAROUSEL */
+.carousel-wrapper{
+    position:relative;
+    display:flex;
+    align-items:center;
+    overflow:hidden
+}
+.carousel{
+    display:flex;
+    gap:20px;
+    overflow-x:auto;
+    scroll-behavior:smooth;
+    padding:20px 0
+}
+.carousel::-webkit-scrollbar{display:none}
+.carousel-btn{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:var(--primary);
+    color:#fff;
+    border:none;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    cursor:pointer;
+    z-index:10
+}
+.left-btn{left:0}
+.right-btn{right:0}
+
+.product-card{
+    min-width:250px;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,.1);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+}
+.product-card img{
+    width:100%;
+    max-height:180px;
+    object-fit:contain;
+    padding:10px;
+    background:#fff;
+}
+.product-info{text-align:center;padding:15px}
+.product-price{color:var(--primary);font-weight:700}
+.product-featured{color:#facc15;font-weight:700}
+
+/* FOOTER */
+footer{
+    background:#111827;
+    color:#e5e7eb;
+    padding:40px 20px 20px
+}
+.footer-container{
+    max-width:1200px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:30px
+}
+.footer-box h3{color:#4cc9f0}
+
+/* BOTTOM NAV */
+.bottom-nav{
+    display:none;
+    position:fixed;
+    bottom:0;
+    width:100%;
+    background:#fff;
+    justify-content:space-around;
+    padding:6px 0;
+    box-shadow:0 -2px 12px rgba(0,0,0,.1);
+    z-index:1000
+}
+.bottom-nav a{
+    text-decoration:none;
+    color:#333;
+    font-size:25px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    position:relative
+}
+.bottom-nav a span{margin-top:2px;}
+.cart-badge{
+    position:absolute;
+    top:0;
+    right:6px;
+    background:red;
+    color:#fff;
+    font-size:10px;
+    padding:1px 6px;
+    border-radius:50%;
+    display:none
+}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+    .nav-links,.nav-actions{display:none}
+    .bottom-nav{display:flex}
+}
+@media(max-width:768px){
+    .hero-title-bg{padding:60px 25px}
+    .hero-title-bg h1{font-size:28px}
+}
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+
+<nav class="navbar">
+<div class="container">
+    <a href="index.html" class="logo">CH-hospital</a>
+    <ul class="nav-links">
+        <li><a href="index.html">الرئيسية</a></li>
+        <li><a href="products.html">المنتجات</a></li>
+        <li><a href="appointment.html">حجز موعد</a></li>
+        <li><a href="login.html">تسجيل دخول </a></li>
+    </ul>
+
+    <div class="nav-actions">
+        <a href="cart.html" class="nav-icon">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cartCountDesktop" class="badge">0</span>
+        </a>
+        <a href="profile.html" id="profileDesktop" class="nav-icon" style="display:none">
+            <i class="fas fa-user"></i>
+        </a>
+        <a href="admin.html" id="adminDesktop" class="nav-icon" style="display:none">
+            <i class="fas fa-cogs"></i>
+        </a>
+    </div>
+</div>
+</nav>
+
+<header class="hero">
+<div class="hero-title-bg">
+    <h1>مرحباً بكم في متجر الكمبيوتر</h1>
+    <p>أفضل الحلول التقنية لجميع احتياجاتك</p>
+</div>
+</header>
+
+<section class="container">
+<h2 style="text-align:center">عروضنا المميزة</h2>
+<div class="carousel-wrapper">
+<button class="carousel-btn left-btn">&#10094;</button>
+<div class="carousel" id="productCarousel"></div>
+<button class="carousel-btn right-btn">&#10095;</button>
+</div>
+</section>
+
+<footer>
+<div class="footer-container">
+<div class="footer-box">
+<h3>من نحن</h3>
+<p>متجر متخصص في أجهزة الكمبيوتر</p>
+</div>
+<div class="footer-box">
+<h3>التواصل</h3>
+<p>📞 +20 1500600016</p>
+</div>
+</div>
+</footer>
+
+<div class="bottom-nav">
+  <a href="index.html"><i class="fas fa-home"></i><span>الرئيسية</span></a>
+  <a href="products.html"><i class="fas fa-laptop"></i><span>المنتجات</span></a>
+  <a href="cart.html"><i class="fas fa-shopping-cart"></i><span>العربة</span><span id="cartCount" class="cart-badge">0</span></a>
+  <a href="appointment.html"><i class="fas fa-calendar"></i><span>موعد</span></a>
+  <a href="profile.html" id="profileNav"><i class="fas fa-user"></i><span>حسابي</span></a>
+  <a href="admin.html" id="adminNav" style="display:none"><i class="fas fa-cogs"></i><span>لوحة التحكم</span></a>
+  <a href="login.html" id="loginNav"><i class="fas fa-sign-in-alt"></i><span>تسجيل دخول</span></a>
+</div>
+
+
+<script>
+firebase.initializeApp({
+ apiKey:"AIzaSyCxZZ4dYqrxJ_rlMcXmZhx5Kwg_ZeYnYog",
+ authDomain:"computer-store-4c946.firebaseapp.com",
+ projectId:"computer-store-4c946"
+});
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+const productCarousel = document.getElementById("productCarousel");
+const leftBtn = document.querySelector(".left-btn");
+const rightBtn = document.querySelector(".right-btn");
+let autoScroll;
+const cardWidth = 270;
+const scrollSpeed = 2000;
+
+// تحميل المنتجات المميزة
+db.collection("products").where("featured","==",true).get().then(snap=>{
+    productCarousel.innerHTML = '';
+    snap.forEach(doc=>{
+        const p = doc.data();
+        const imgUrl = (p.images && p.images.length>0) ? p.images[0] : (p.image ? p.image : 'placeholder.jpg');
+        productCarousel.innerHTML += `
+        <div class="product-card">
+            <img src="${imgUrl}">
+            <div class="product-info">
+                <h4>${p.name}</h4>
+                <p class="product-price">${p.price} ج.م</p>
+                <p class="product-featured">⭐ مميز</p>
+            </div>
+        </div>`;
+    });
+
+    // نسخ المحتوى لتكرار الحركة
+    productCarousel.innerHTML += productCarousel.innerHTML;
+
+    // أزرار التنقل
+    leftBtn.onclick = () => productCarousel.scrollBy({ left:-cardWidth, behavior:'smooth' });
+    rightBtn.onclick = () => productCarousel.scrollBy({ left:cardWidth, behavior:'smooth' });
+
+    // التحريك التلقائي
+    function startAutoScroll(){
+        autoScroll = setInterval(()=>{
+            productCarousel.scrollBy({ left:cardWidth, behavior:'smooth' });
+            const maxScroll = productCarousel.scrollWidth/2;
+            if(productCarousel.scrollLeft >= maxScroll){
+                setTimeout(()=> productCarousel.scrollLeft=0, 600);
+            }
+        }, scrollSpeed);
+    }
+
+    startAutoScroll();
+    productCarousel.addEventListener("mouseenter", ()=> clearInterval(autoScroll));
+    productCarousel.addEventListener("mouseleave", ()=> startAutoScroll());
+});
+
+// التحقق من المستخدم
+auth.onAuthStateChanged(async user => {
+    const profileD = document.getElementById("profileDesktop");
+    const adminD = document.getElementById("adminDesktop");
+    const profileM = document.getElementById("profileNav");
+    const adminM = document.getElementById("adminNav");
+    const loginM = document.getElementById("loginNav");
+
+    if(user){
+        // إخفاء زر تسجيل الدخول
+        loginM.style.display = "none";
+
+        // إظهار الملف الشخصي
+        profileD.style.display = profileM.style.display = "flex";
+
+        // التحقق من الدور
+        const u = await db.collection("users").doc(user.uid).get();
+        if(u.exists && u.data().role === "admin"){
+            adminD.style.display = adminM.style.display = "flex";
+        } else {
+            adminD.style.display = adminM.style.display = "none";
+        }
+
+    } else {
+        // المستخدم غير مسجل: إظهار تسجيل الدخول وإخفاء باقي الأيقونات
+        loginM.style.display = "flex";
+        profileD.style.display = profileM.style.display = "none";
+        adminD.style.display = adminM.style.display = "none";
+    }
+});
+
+
+</script>
+
+
+</body>
+</html>

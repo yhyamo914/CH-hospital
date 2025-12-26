@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حجز موعد - متجر الكمبيوتر</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyCxZZ4dYqrxJ_rlMcXmZhx5Kwg_ZeYnYog",
+    authDomain: "computer-store-4c946.firebaseapp.com",
+    projectId: "computer-store-4c946",
+    storageBucket: "computer-store-4c946.appspot.com",
+    messagingSenderId: "77513680070",
+    appId: "1:77513680070:web:2d2c080956a16587c4a3c7"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+</script>
+
+<style>
+:root {
+    --primary:#4361ee;
+    --secondary:#3a0ca3;
+    --light:#f8f9fa;
+    --dark:#212529;
+    --radius:14px;
+}
+*{box-sizing:border-box;font-family:'Segoe UI',Tahoma}
+body{margin:0;background:#f4f6fb}
+
+/* ===== Navbar ===== */
+.navbar{
+    background:white;
+    box-shadow:0 4px 20px rgba(0,0,0,.08);
+}
+.navbar .container{
+    max-width:1200px;
+    margin:auto;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.logo{
+    font-size:22px;
+    font-weight:700;
+    color:var(--primary);
+    text-decoration:none;
+}
+.nav-links{
+    list-style:none;
+    display:flex;
+    gap:20px;
+}
+.nav-links a{
+    text-decoration:none;
+    color:var(--dark);
+    font-weight:500;
+}
+.nav-links a:hover{color:var(--primary)}
+
+/* ===== Booking Card ===== */
+.main{
+    display:flex;
+    justify-content:center;
+    margin-top:60px;
+}
+.card{
+    background:white;
+    width:100%;
+    max-width:600px;
+    padding:35px;
+    border-radius:var(--radius);
+    box-shadow:0 15px 40px rgba(0,0,0,.12);
+}
+.card h2{
+    text-align:center;
+    color:var(--primary);
+    margin-bottom:25px;
+}
+.form-group{
+    margin-bottom:15px;
+}
+.form-group input,
+.form-group textarea{
+    width:100%;
+    padding:14px;
+    border-radius:var(--radius);
+    border:1px solid #ccc;
+    font-size:15px;
+}
+button{
+    width:100%;
+    padding:15px;
+    background:var(--primary);
+    border:none;
+    color:white;
+    font-size:18px;
+    border-radius:var(--radius);
+    cursor:pointer;
+}
+button:hover{background:var(--secondary)}
+.status{
+    text-align:center;
+    margin-top:20px;
+    font-weight:bold;
+}
+.success{
+    color:#28a745;
+    text-align:center;
+    display:none;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Navbar ===== -->
+<nav class="navbar">
+    <div class="container">
+        <a href="index.html" class="logo">متجر الكمبيوتر</a>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="products.html">المنتجات</a></li>
+            <li><a href="appointment.html">حجز موعد</a></li>
+            <li><a href="profile.html">الملف الشخصي</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ===== Booking Form ===== -->
+<div class="main">
+<div class="card">
+    <h2><i class="fa fa-calendar-check"></i> حجز موعد</h2>
+
+    <div class="form-group">
+        <input type="text" id="name" placeholder="الاسم الكامل">
+    </div>
+    <div class="form-group">
+        <input type="email" id="email" placeholder="البريد الإلكتروني">
+    </div>
+    <div class="form-group">
+        <input type="tel" id="phone" placeholder="رقم الهاتف">
+    </div>
+    <div class="form-group">
+        <input type="date" id="date">
+    </div>
+    <div class="form-group">
+        <input type="time" id="time">
+    </div>
+    <div class="form-group">
+        <textarea id="notes" rows="4" placeholder="ملاحظات إضافية"></textarea>
+    </div>
+
+    <button onclick="bookAppointment()">تأكيد الحجز</button>
+
+    <p class="success" id="successMsg">تم إرسال طلب الحجز بنجاح ✅</p>
+    <p class="status" id="statusMsg"></p>
+</div>
+</div>
+
+<script>
+auth.onAuthStateChanged(user=>{
+    if(!user){
+        alert("يجب تسجيل الدخول");
+        location.href="login.html";
+        return;
+    }
+    document.getElementById("email").value = user.email;
+    document.getElementById("email").disabled = true;
+    loadStatus(user.uid);
+});
+
+async function bookAppointment(){
+    const user = auth.currentUser;
+    if(!user) return;
+
+    const data={
+        userId:user.uid,
+        name:name.value.trim(),
+        email:user.email,
+        phone:phone.value.trim(),
+        date:date.value,
+        time:time.value,
+        notes:notes.value.trim(),
+        status:"pending",
+        createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    if(!data.name || !data.phone || !data.date || !data.time){
+        alert("يرجى ملء جميع الحقول");
+        return;
+    }
+
+    await db.collection("appointments").add(data);
+    successMsg.style.display="block";
+    loadStatus(user.uid);
+}
+
+async function loadStatus(uid){
+    const q = await db.collection("appointments")
+        .where("userId","==",uid)
+        .orderBy("createdAt","desc")
+        .limit(1)
+        .get();
+
+    if(q.empty) return;
+    const s = q.docs[0].data().status;
+    if(s==="accepted"){
+        statusMsg.textContent="تم قبول الحجز ✅";
+        statusMsg.style.color="green";
+    }else if(s==="rejected"){
+        statusMsg.textContent="تم رفض الحجز ❌";
+        statusMsg.style.color="red";
+    }else{
+        statusMsg.textContent="الحجز قيد المراجعة ⏳";
+        statusMsg.style.color="#f0ad4e";
+    }
+}
+</script>
+</body>
+</html>
