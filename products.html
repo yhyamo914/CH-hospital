@@ -11,31 +11,38 @@
 
 <style>
 :root{
-    --primary:#4361ee;
-    --accent:#4cc9f0;
-    --dark:#111827;
-    --light:#f8fafc;
-    --radius:18px;
-    --shadow:0 12px 30px rgba(0,0,0,.12);
+    --primary:#1e40af; /* أزرق أغمق */
+    --accent:#6366f1; /* أرجواني فاتح */
+    --dark:#1f2937;
+    --light:#f3f4f6;
+    --radius:20px;
+    --shadow:0 14px 35px rgba(0,0,0,.15);
+    --hover-shadow:0 20px 50px rgba(0,0,0,.2);
 }
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+
+/* Reset & Global */
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 body{
     background:var(--light);
     color:var(--dark);
     min-height:100vh;
     display:flex;
     flex-direction:column;
-    margin-bottom:80px; /* مساحة أسفل للشريط السفلي */
+    margin-bottom:90px;
+    transition: background .3s, color .3s;
 }
+
 /* ===== TOP BAR ===== */
 .topbar{
     position:fixed;
     top:0;
     right:0;
     left:0;
-    background:white;
-    box-shadow:0 6px 20px rgba(0,0,0,.08);
+    background:linear-gradient(90deg,var(--primary),var(--accent));
+    color:white;
+    box-shadow:0 6px 25px rgba(0,0,0,.15);
     z-index:1000;
+    transition: background .4s;
 }
 .topbar-container{
     max-width:1200px;
@@ -47,24 +54,41 @@ body{
 }
 .logo{
     font-weight:700;
-    font-size:20px;
-    color:var(--primary);
+    font-size:22px;
+    color:white;
     text-decoration:none;
 }
 .nav{
     display:flex;
-    gap:18px;
+    gap:20px;
 }
 .nav a{
     text-decoration:none;
-    color:#374151;
+    color:white;
     font-weight:600;
+    position:relative;
+    padding:6px 8px;
+    transition: color .3s;
 }
-.nav a:hover{color:var(--primary)}
+.nav a::after{
+    content:"";
+    position:absolute;
+    bottom:0;
+    left:0;
+    height:3px;
+    width:0;
+    background:white;
+    border-radius:2px;
+    transition:width .3s;
+}
+.nav a:hover::after{width:100%;}
+.nav a:hover{color:#fce38a;}
+
 /* ===== PAGE ===== */
-.page{padding-top:90px;flex:1;}
+.page{padding-top:95px;flex:1;}
 .container{max-width:1200px;margin:auto;padding:20px;}
-h1{text-align:center;color:var(--primary);margin-bottom:25px;}
+h1{text-align:center;color:var(--primary);margin-bottom:30px;font-size:32px;text-shadow:1px 1px 3px rgba(0,0,0,.15);}
+
 /* ===== FILTERS ===== */
 .filters{
     display:flex;
@@ -74,107 +98,134 @@ h1{text-align:center;color:var(--primary);margin-bottom:25px;}
     flex-wrap:wrap;
 }
 .filters button{
-    padding:10px 22px;
+    padding:10px 24px;
     border:none;
     border-radius:50px;
-    background:#e5e7eb;
+    background:white;
     font-weight:600;
     cursor:pointer;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+    transition:.4s;
 }
 .filters button.active,
 .filters button:hover{
     background:linear-gradient(90deg,var(--primary),var(--accent));
     color:white;
+    transform:translateY(-2px);
+    box-shadow:var(--hover-shadow);
 }
+
 /* ===== DROPDOWN ===== */
 .dropdown{position:relative;display:inline-block;}
 .dropbtn{
-    padding:10px 22px;
+    padding:10px 24px;
     border:none;
     border-radius:50px;
-    background:#e5e7eb;
+    background:white;
     font-weight:600;
     cursor:pointer;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+    transition:.4s;
 }
 .dropbtn.active,
 .dropbtn:hover{
     background:linear-gradient(90deg,var(--primary),var(--accent));
     color:white;
+    transform:translateY(-2px);
+    box-shadow:var(--hover-shadow);
 }
 .dropdown-content{
     display:none;
     position:absolute;
-    background:#f8fafc;
+    background:white;
     min-width:160px;
-    box-shadow:0 6px 12px rgba(0,0,0,.15);
-    border-radius:12px;
+    box-shadow:0 10px 20px rgba(0,0,0,.15);
+    border-radius:15px;
     z-index:100;
     flex-direction:column;
     overflow:hidden;
 }
 .dropdown-content button{
     background:white;
-    color:#374151;
-    padding:10px 16px;
+    color:var(--dark);
+    padding:12px 18px;
     border:none;
     text-align:right;
     width:100%;
     cursor:pointer;
+    transition:.3s;
 }
 .dropdown-content button:hover{
     background:linear-gradient(90deg,var(--primary),var(--accent));
     color:white;
 }
 .dropdown:hover .dropdown-content{display:flex;}
+
 /* ===== PRODUCTS ===== */
 .products-wrapper{display:flex;justify-content:center;}
-.products-grid{width:100%;max-width:1000px;display:flex;flex-direction:column;gap:20px;}
-.products-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:10px;scroll-behavior: smooth;}
+.products-grid{width:100%;max-width:1000px;display:flex;flex-direction:column;gap:25px;}
+.products-row{display:flex;gap:16px;overflow-x:auto;padding-bottom:15px;scroll-behavior: smooth;scroll-snap-type:x mandatory;}
 .product-card{
     background:white;
-    width:180px;
+    width:200px;
     border-radius:var(--radius);
     box-shadow:var(--shadow);
     overflow:hidden;
     cursor:pointer;
-    transition:.3s;
+    transition:.35s ease;
     flex-shrink:0;
+    position:relative;
+    border:1px solid #e5e7eb;
 }
-.product-card:hover{transform:translateY(-6px)}
-.product-card img{width:100%;height:140px;object-fit:cover;}
-.product-info{padding:14px;text-align:center;}
-.product-info h3{font-size:15px;margin-bottom:8px;}
-.price{color:var(--primary);font-weight:700;}
+.product-card:hover{
+    transform:translateY(-10px) scale(1.05);
+    box-shadow:var(--hover-shadow);
+}
+.product-card img{width:100%;height:140px;object-fit:cover;transition:.3s;}
+.product-card:hover img{transform:scale(1.08);}
+.product-info{padding:14px;text-align:center;transition:.3s;}
+.product-info h3{font-size:16px;margin-bottom:8px;color:var(--dark);}
+.price{color:var(--primary);font-weight:700;font-size:15px;}
+
 /* ===== MODAL ===== */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:2000;}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:2000;transition:.3s;}
 .modal.show{display:flex}
 .modal-content{
     background:white;
     width:95%;
-    max-width:700px;
-    border-radius:20px;
-    padding:22px;
+    max-width:750px;
+    border-radius:25px;
+    padding:25px;
     position:relative;
     display:flex;
     flex-direction:column;
-    gap:12px;
+    gap:15px;
+    animation:fadeIn 0.4s ease;
 }
-.close{position:absolute;top:15px;left:15px;font-size:22px;cursor:pointer;}
-.modal-images{display:flex;overflow-x:auto;gap:10px;scroll-behavior: smooth;}
-.modal-images img{height:260px;border-radius:14px;object-fit:cover;}
-.modal-nav{display:flex;justify-content:space-between;margin-top:8px;}
-.modal-nav button{padding:8px 14px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;}
-.modal-body{margin-top:8px}
-.modal-body h2{color:var(--primary);margin-bottom:10px}
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(-20px);}
+    to{opacity:1; transform:translateY(0);}
+}
+.close{position:absolute;top:15px;left:15px;font-size:24px;cursor:pointer;color:var(--primary);}
+.modal-images{display:flex;overflow-x:auto;gap:12px;scroll-behavior: smooth;}
+.modal-images img{height:270px;border-radius:16px;object-fit:cover;transition:.3s;}
+.modal-images img:hover{transform:scale(1.05);}
+.modal-nav{display:flex;justify-content:space-between;margin-top:12px;}
+.modal-nav button{padding:10px 16px;background:var(--primary);color:white;border:none;border-radius:10px;cursor:pointer;transition:.3s;}
+.modal-nav button:hover{background:var(--accent);}
+.modal-body{margin-top:10px}
+.modal-body h2{color:var(--primary);margin-bottom:10px;font-size:24px;}
 .actions{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;}
-.btn{flex:1;padding:12px;border-radius:50px;text-align:center;color:white;font-weight:600;text-decoration:none;}
+.btn{flex:1;padding:14px;border-radius:50px;text-align:center;color:white;font-weight:600;text-decoration:none;transition:.3s;}
 .whatsapp{background:#25d366}
 .book{background:linear-gradient(90deg,var(--primary),var(--accent))}
+.btn:hover{opacity:.9;transform:translateY(-2px)}
+
 /* ===== FOOTER ===== */
 footer{
     background:#111827;
     color:#e5e7eb;
-    padding:40px 20px 20px;
+    padding:50px 20px 20px;
 }
 .footer-container{
     max-width:1200px;
@@ -183,7 +234,7 @@ footer{
     grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
     gap:30px;
 }
-.footer-box h3{color:#4cc9f0;margin-bottom:12px}
+.footer-box h3{color:var(--accent);margin-bottom:12px;font-size:18px;}
 .footer-box p,
 .footer-box a{
     color:#d1d5db;
@@ -191,9 +242,7 @@ footer{
     line-height:1.8;
     text-decoration:none;
 }
-.footer-bottom{text-align:center;margin-top:20px;border-top:1px solid #374151;padding-top:12px;font-size:13px;}
-/* ===== MOBILE ===== */
-@media(max-width:600px){.nav{display:none}.products-row{flex-wrap:nowrap;overflow-x:auto;}}
+.footer-bottom{text-align:center;margin-top:25px;border-top:1px solid #374151;padding-top:12px;font-size:13px;}
 
 /* ===== BOTTOM NAV ===== */
 .bottom-nav{
@@ -201,10 +250,10 @@ footer{
     position:fixed;
     bottom:0;
     width:100%;
-    background:#fff;
+    background:white;
     justify-content:space-around;
-    padding:6px 0;
-    box-shadow:0 -2px 12px rgba(0,0,0,.1);
+    padding:8px 0;
+    box-shadow:0 -3px 20px rgba(0,0,0,.12);
     z-index:1000;
 }
 .bottom-nav a{
@@ -216,12 +265,11 @@ footer{
     align-items:center;
     justify-content:center;
     position:relative;
-    padding:8px 0;
+    padding:6px 0;
+    transition:.3s;
 }
-.bottom-nav a i{
-    font-size:22px;
-    margin-bottom:2px;
-}
+.bottom-nav a i{font-size:22px;margin-bottom:2px;}
+.bottom-nav a:hover{color:var(--primary);}
 .cart-badge{
     position:absolute;
     top:0;
@@ -229,12 +277,12 @@ footer{
     background:red;
     color:#fff;
     font-size:10px;
-    padding:1px 6px;
+    padding:2px 6px;
     border-radius:50%;
     display:none;
 }
-@media(min-width:1025px){.bottom-nav{display:none}}
-/* SOCIAL FLOATING ICONS */
+
+/* ===== SOCIAL FLOATING ===== */
 .social-float{
     position:fixed;
     top:50%;
@@ -242,60 +290,211 @@ footer{
     transform:translateY(-50%);
     display:flex;
     flex-direction:column;
-    gap:12px;
+    gap:14px;
     z-index:2000;
 }
-
 .social{
-    width:45px;
-    height:45px;
+    width:50px;
+    height:50px;
     display:flex;
     align-items:center;
     justify-content:center;
     border-radius:50%;
     color:#fff;
-    font-size:20px;
+    font-size:22px;
     text-decoration:none;
-    box-shadow:0 8px 20px rgba(0,0,0,.25);
+    box-shadow:0 8px 25px rgba(0,0,0,.25);
     transition:.3s ease;
 }
+.social:hover{transform:scale(1.18);}
+.social.facebook{background:#1877f2;}
+.social.tiktok{background:#000;position:relative;}
+.social.tiktok::after{content:"";position:absolute;inset:-2px;border-radius:50%;background:linear-gradient(45deg,#25F4EE,#FE2C55);z-index:-1;}
+.social.instagram{background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4);}
 
-.social:hover{
-    transform:scale(1.15);
-}
-
-/* Facebook */
-.social.facebook{
-    background:#1877f2;
-}
-
-/* TikTok */
-.social.tiktok{
-    background:#000;
-    position:relative;
-}
-.social.tiktok::after{
+/* ===== ENHANCED PRODUCT SLIDER ===== */
+.products-row::-webkit-scrollbar{display:none;}
+.product-card::after{
     content:"";
     position:absolute;
-    inset:-2px;
+    inset:0;
+    background:linear-gradient(to top,rgba(0,0,0,.3),transparent);
+    opacity:0;
+    transition:.3s;
+}
+.product-card:hover::after{opacity:1;}
+
+/* ===== SECTION TITLES ===== */
+.products-grid h4{
+    font-size:22px;
+    margin:25px 0 12px;
+    padding-right:10px;
+    border-right:5px solid var(--primary);
+}
+.products-grid h5{
+    font-size:16px;
+    margin:12px 0 6px;
+    color:var(--accent);
+}
+
+/* ===== SLIDER CONTROLS ===== */
+.slider-controls{
+    display:flex;
+    justify-content:space-between;
+    margin:-10px 0 10px;
+}
+.slider-controls button{
+    background:var(--primary);
+    color:white;
+    border:none;
+    width:40px;
+    height:40px;
     border-radius:50%;
-    background:linear-gradient(45deg,#25F4EE,#FE2C55);
-    z-index:-1;
+    cursor:pointer;
+    transition:.3s;
 }
+.slider-controls button:hover{background:var(--accent);}
 
-/* Instagram */
-.social.instagram{
-    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4);
-}
-
-/* Mobile size */
+/* ===== MOBILE ===== */
 @media(max-width:768px){
-    .social{
-        width:40px;
-        height:40px;
-        font-size:18px;
+    .social{width:40px;height:40px;font-size:18px;}
+    .nav{display:none;}
+}
+/* إخفاء الشريط السفلي في الديسكتوب */
+@media (min-width: 769px){
+    .bottom-nav{
+        display:none !important;
+    }
+}/* ===== MOBILE FILTER DROPDOWN ===== */
+@media(max-width:768px){
+  .filters{display:none;} /* إخفاء الفلاتر القديمة */
+  
+  .mobile-filters{
+    position:relative;
+    margin:10px auto;
+    max-width:300px;
+  }
+  .mobile-filter-btn{
+    width:100%;
+    padding:10px 15px;
+    border:none;
+    border-radius:50px;
+    background:linear-gradient(90deg,var(--primary),var(--accent));
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    text-align:center;
+  }
+  .mobile-filter-content{
+    display:none;
+    flex-direction:column;
+    background:white;
+    box-shadow:0 6px 12px rgba(0,0,0,.15);
+    border-radius:12px;
+    margin-top:6px;
+    overflow:hidden;
+  }
+  .mobile-filter-content button{
+    padding:10px 14px;
+    border:none;
+    background:white;
+    cursor:pointer;
+    text-align:right;
+  }
+  .mobile-filter-content button:hover{
+    background:linear-gradient(90deg,var(--primary),var(--accent));
+    color:white;
+  }
+  .mobile-filter-content.show{display:flex;}
+}
+
+/* ===== MOBILE & RESPONSIVE PRODUCT CARDS ===== */
+@media(max-width:480px){
+    .products-row{
+        gap:8px;
+        padding:12px 5px 20px;
+    }
+    .product-card{
+        min-width:45%; /* يظهر تقريباً بطاقتين في الشاشة */
     }
 }
+
+@media(min-width:481px) and (max-width:768px){
+    .products-row{
+        gap:10px;
+        padding:12px 10px 20px;
+    }
+    .product-card{
+        min-width:10%; /* يظهر تقريباً ثلاث بطاقات في الشاشة */
+    }
+}
+
+@media(min-width:769px) and (max-width:1024px){
+    .products-row{
+        gap:16px;
+        padding:15px 10px 20px;
+    }
+    .product-card{
+        min-width:200px; /* للتابلت 3-4 بطاقات حسب الشاشة */
+    }
+    .mobile-submenu .sub-content{
+    display:none;
+    flex-direction:column;
+    padding-left:10px;
+}
+.mobile-submenu .sub-btn{
+    width:100%;
+    padding:10px 14px;
+    border:none;
+    background:white;
+    cursor:pointer;
+    text-align:right;
+    font-weight:600;
+}
+.mobile-submenu .sub-btn.active::after{
+    content:"▲";
+    float:left;
+}
+.mobile-submenu .sub-btn::after{
+    content:"▼";
+    float:left;
+}
+.mobile-submenu .sub-content button{
+    padding:8px 12px;
+    border:none;
+    background:white;
+    cursor:pointer;
+    text-align:right;
+    font-weight:400;
+}
+.mobile-submenu .sub-content button:hover{
+    background:linear-gradient(90deg,var(--primary),var(--accent));
+    color:white;
+}
+
+}
+.mobile-filter-content .sub-content{
+    display:none;
+    flex-direction:column;
+    padding-left:10px;
+}
+.mobile-filter-content .sub-content button{
+    padding:8px 14px;
+    font-size:14px;
+}
+.mobile-filter-content button.main-cat-btn{
+    font-weight:600;
+}
+.mobile-filter-content button.main-cat-btn.active + .sub-content{
+    display:flex;
+}
+    /* إخفاء الأقسام الفرعية في نسخة الديسكتوب */
+@media (min-width: 769px) {
+  .mobile-filters  {
+    display: none !important;
+  }
+}
+
 
 </style>
 
@@ -324,6 +523,9 @@ footer{
         <button class="active" data-cat="all">الكل</button>
         <button data-cat="أجهزة الكمبيوتر">أجهزة الكمبيوتر</button>
         <button data-cat="أجهزة اللابتوب">أجهزة اللابتوب</button>
+        <button data-cat="شاشات">شاشات</button>
+<button data-cat="ماوسات">ماوسات</button>
+
         <div class="dropdown">
             <button class="dropbtn" data-cat="الإكسسوارات">الإكسسوارات ▼</button>
             <div class="dropdown-content">
@@ -337,6 +539,31 @@ footer{
         </div>
         <button data-cat="كاميرات المراقبة">كاميرات المراقبة</button>
     </div>
+<div class="mobile-filters">
+  <button class="mobile-filter-btn">تصفية المنتجات ▼</button>
+  <div class="mobile-filter-content">
+    <button data-cat="all">الكل</button>
+    <button data-cat="أجهزة الكمبيوتر">أجهزة الكمبيوتر</button>
+    <button data-cat="أجهزة اللابتوب">أجهزة اللابتوب</button>
+    <button data-cat="شاشات">شاشات</button>
+    
+
+    <!-- قسم الإكسسوارات -->
+    <div class="mobile-submenu">
+      <button class="sub-btn">الإكسسوارات ▼</button>
+      <div class="sub-content">
+        <button data-cat="كيبورد">كيبورد</button>
+        <button data-cat="ماوسات">ماوس</button>
+        <button data-cat="سماعات">سماعات</button>
+        <button data-cat="لوحات مفاتيح">لوحات مفاتيح</button>
+        <button data-cat="كابلات">كابلات</button>
+        <button data-cat="أجهزة التخزين">أجهزة التخزين</button>
+      </div>
+    </div>
+
+    <button data-cat="كاميرات المراقبة">كاميرات المراقبة</button>
+  </div>
+</div>
 
     <div class="products-wrapper">
         <div class="products-grid" id="productsGrid"></div>
@@ -502,89 +729,135 @@ function nextImage(){
     currentImageIndex=(currentImageIndex+1)%imgs.length;
     showImage(currentImageIndex);
 }
+function wrapRowWithControls(row){
+    const wrapper = document.createElement("div");
+
+    const controls = document.createElement("div");
+    controls.className = "slider-controls";
+
+    const left = document.createElement("button");
+    left.innerHTML = "❮";
+    left.onclick = () => row.scrollBy({ left: -300, behavior: "smooth" });
+
+    const right = document.createElement("button");
+    right.innerHTML = "❯";
+    right.onclick = () => row.scrollBy({ left: 300, behavior: "smooth" });
+
+    controls.appendChild(left);
+    controls.appendChild(right);
+
+    wrapper.appendChild(controls);
+    wrapper.appendChild(row);
+
+    return wrapper;
+}
+
 
 function render(cat="all"){
     grid.innerHTML="";
-    let filtered=products.slice();
-    if(cat==="all"){
-        const grouped={};
-        filtered.forEach(p=>{
-            const key=p.category;
-            if(!grouped[key])grouped[key]=[];
-            grouped[key].push(p);
-        });
-        for(const key in grouped){
-            const title=document.createElement("h4");
-            title.textContent=key;
-            title.style.color="#4361ee";
-            title.style.margin="10px 0 5px 0";
-            grid.appendChild(title);
+    let filtered = products.slice();
 
-            if(key==="الإكسسوارات"){
-                const subGrouped={};
-                grouped[key].forEach(p=>{
-                    const subKey=p.subCategory || p.name.toLowerCase().includes("كيبورد")?"كيبورد":p.name.toLowerCase().includes("ماوس")?"ماوس":"فرع غير محدد";
-                    if(!subGrouped[subKey]) subGrouped[subKey]=[];
-                    subGrouped[subKey].push(p);
-                });
-                for(const subKey in subGrouped){
-                    const subTitle=document.createElement("h5");
-                    subTitle.textContent=subKey;
-                    subTitle.style.color="#4cc9f0";
-                    subTitle.style.margin="5px 0";
-                    grid.appendChild(subTitle);
-
-                    const subRow=document.createElement("div");
-                    subRow.className="products-row";
-                    subGrouped[subKey].forEach(p=>{
-                        const c=document.createElement("div");
-                        c.className="product-card";
-                        c.innerHTML=`<img src="${p.image||p.images[0]}"><div class="product-info"><h3>${p.name}</h3><div class="price">${p.price} ج.م</div></div>`;
-                        c.onclick=()=>openModal(p);
-                        subRow.appendChild(c);
-                    });
-                    grid.appendChild(subRow);
-                }
-            }else{
-                const row=document.createElement("div");
-                row.className="products-row";
-                grouped[key].forEach(p=>{
-                    const c=document.createElement("div");
-                    c.className="product-card";
-                    c.innerHTML=`<img src="${p.image||p.images[0]}"><div class="product-info"><h3>${p.name}</h3><div class="price">${p.price} ج.م</div></div>`;
-                    c.onclick=()=>openModal(p);
-                    row.appendChild(c);
-                });
-                grid.appendChild(row);
+    // الفلترة حسب القسم
+    if(cat !== "all"){
+        if(cat==="الإكسسوارات" || ["كيبورد","ماوس","سماعات","لوحات مفاتيح","كابلات","أجهزة التخزين"].includes(cat)){
+            filtered = filtered.filter(p => p.category==="الإكسسوارات");
+            if(cat!=="الإكسسوارات"){
+                filtered = filtered.filter(p => 
+                    (p.subCategory || p.name).toLowerCase().includes(cat.toLowerCase())
+                );
             }
+            const row = document.createElement("div");
+            row.className = "products-row";
+            filtered.forEach(p=>{
+                const imgSrc = p.image || (p.images && p.images[0]) || 'placeholder.png';
+                const c = document.createElement("div");
+                c.className="product-card";
+                c.innerHTML=`<img src="${imgSrc}"><div class="product-info"><h3>${p.name}</h3><div class="price">${p.price} ج.م</div></div>`;
+                c.onclick=()=>openModal(p);
+                row.appendChild(c);
+            });
+            grid.appendChild(wrapRowWithControls(row));
+            return;
+        } else {
+            filtered = filtered.filter(p => p.category === cat);
+            const row = document.createElement("div");
+            row.className = "products-row";
+            filtered.forEach(p=>{
+                const imgSrc = p.image || (p.images && p.images[0]) || 'placeholder.png';
+                const c = document.createElement("div");
+                c.className="product-card";
+                c.innerHTML=`<img src="${imgSrc}"><div class="product-info"><h3>${p.name}</h3><div class="price">${p.price} ج.م</div></div>`;
+                c.onclick=()=>openModal(p);
+                row.appendChild(c);
+            });
+            grid.appendChild(wrapRowWithControls(row));
+            return;
         }
-    }else if(cat==="الإكسسوارات" || ["كيبورد","ماوس","سماعات","لوحات مفاتيح","كابلات","أجهزة التخزين"].includes(cat)){
-        filtered=filtered.filter(p=>p.category==="الإكسسوارات");
-        if(cat!=="الإكسسوارات"){
-            filtered=filtered.filter(p=>(p.subCategory||p.name).toLowerCase().includes(cat.toLowerCase()));
+    }
+
+    // إذا كان الكل
+    const grouped = {};
+    filtered.forEach(p=>{
+        const key = p.category;
+        if(!grouped[key]) grouped[key] = [];
+        grouped[key].push(p);
+    });
+
+    for(const key in grouped){
+        const title = document.createElement("h4");
+        title.textContent = key;
+        title.style.color = "#4361ee";
+        title.style.margin = "10px 0 5px 0";
+        grid.appendChild(title);
+
+        if(key==="الإكسسوارات"){
+            // ترتيب الإكسسوارات بشكل فرعي
+            const subGrouped = {};
+            grouped[key].forEach(p=>{
+                const subKey = p.subCategory || 
+                    (p.name.toLowerCase().includes("كيبورد") ? "كيبورد" :
+                    p.name.toLowerCase().includes("ماوس") ? "ماوس" :
+                    p.name.toLowerCase().includes("سماعات") ? "سماعات" :
+                    p.name.toLowerCase().includes("لوحات مفاتيح") ? "لوحات مفاتيح" :
+                    p.name.toLowerCase().includes("كابلات") ? "كابلات" :
+                    p.name.toLowerCase().includes("أجهزة التخزين") ? "أجهزة التخزين" :
+                    "فرع غير محدد");
+                if(!subGrouped[subKey]) subGrouped[subKey] = [];
+                subGrouped[subKey].push(p);
+            });
+
+            for(const subKey in subGrouped){
+                const subTitle = document.createElement("h5");
+                subTitle.textContent = subKey;
+                subTitle.style.color = "#4cc9f0";
+                subTitle.style.margin = "5px 0";
+                grid.appendChild(subTitle);
+
+                const subRow = document.createElement("div");
+                subRow.className = "products-row";
+                subGrouped[subKey].forEach(p=>{
+                    const imgSrc = p.image || (p.images && p.images[0]) || 'placeholder.png';
+                    const c = document.createElement("div");
+                    c.className="product-card";
+                    c.innerHTML=`<img src="${imgSrc}"><div class="product-info"><h3>${p.name}</h3><div class="price">${p.price} ج.م</div></div>`;
+                    c.onclick=()=>openModal(p);
+                    subRow.appendChild(c);
+                });
+                grid.appendChild(subRow);
+            }
+        } else {
+            const row = document.createElement("div");
+            row.className = "products-row";
+            grouped[key].forEach(p=>{
+                const imgSrc = p.image || (p.images && p.images[0]) || 'placeholder.png';
+                const c = document.createElement("div");
+                c.className="product-card";
+                c.innerHTML=`<img src="${imgSrc}"><div class="product-info"><h3>${p.name}</h3><div class="price">${p.price} ج.م</div></div>`;
+                c.onclick=()=>openModal(p);
+                row.appendChild(c);
+            });
+            grid.appendChild(wrapRowWithControls(row));
         }
-        const row=document.createElement("div");
-        row.className="products-row";
-        filtered.forEach(p=>{
-            const c=document.createElement("div");
-            c.className="product-card";
-            c.innerHTML=`<img src="${p.image||p.images[0]}"><div class="product-info"><h3>${p.name}</h3><div class="price">${p.price} ج.م</div></div>`;
-            c.onclick=()=>openModal(p);
-            row.appendChild(c);
-        });
-        grid.appendChild(row);
-    }else{
-        filtered=filtered.filter(p=>p.category===cat);
-        const row=document.createElement("div");
-        row.className="products-row";
-        filtered.forEach(p=>{
-            const c=document.createElement("div");
-            c.className="product-card";
-            c.innerHTML=`<img src="${p.image||p.images[0]}"><div class="product-info"><h3>${p.name}</h3><div class="price">${p.price} ج.م</div></div>`;
-            c.onclick=()=>openModal(p);
-            row.appendChild(c);
-        });
-        grid.appendChild(row);
     }
 }
 
@@ -636,7 +909,34 @@ auth.onAuthStateChanged(async user=>{
         profileM.style.display="none";
         adminM.style.display="none";
     }
+})
+// زر القائمة الرئيسية
+const mobileBtn = document.querySelector(".mobile-filter-btn");
+const mobileContent = document.querySelector(".mobile-filter-content");
+mobileBtn.onclick = () => {
+    mobileContent.classList.toggle("show");
+}
+
+// القوائم الفرعية
+document.querySelectorAll(".mobile-submenu .sub-btn").forEach(btn=>{
+    btn.onclick = () => {
+        btn.classList.toggle("active");
+        const sub = btn.nextElementSibling;
+        if(sub) sub.style.display = sub.style.display==="flex"?"none":"flex";
+    }
 });
+
+// اختيار أي قسم رئيسي أو فرعي
+mobileContent.querySelectorAll("button[data-cat]").forEach(b => {
+    b.onclick = () => {
+        render(b.dataset.cat);
+        mobileContent.classList.remove("show"); // يغلق القائمة بعد الاختيار
+    }
+});
+
+
+
+;
 </script>
 
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
@@ -654,6 +954,9 @@ auth.onAuthStateChanged(async user=>{
     <i class="fab fa-instagram"></i>
   </a>
 </div>
+<!-- MOBILE FILTER DROPDOWN -->
+
+
 
 </body>
 </html>
