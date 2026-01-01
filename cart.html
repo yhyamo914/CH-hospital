@@ -270,6 +270,70 @@ body{
 @media(min-width:1025px){
     .bottom-nav{display:none;}
 }
+
+/* SOCIAL FLOATING ICONS */
+.social-float{
+    position:fixed;
+    top:50%;
+    left:15px;
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    z-index:2000;
+}
+
+.social{
+    width:45px;
+    height:45px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    color:#fff;
+    font-size:20px;
+    text-decoration:none;
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+    transition:.3s ease;
+}
+
+.social:hover{
+    transform:scale(1.15);
+}
+
+/* Facebook */
+.social.facebook{
+    background:#1877f2;
+}
+
+/* TikTok */
+.social.tiktok{
+    background:#000;
+    position:relative;
+}
+.social.tiktok::after{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    border-radius:50%;
+    background:linear-gradient(45deg,#25F4EE,#FE2C55);
+    z-index:-1;
+}
+
+/* Instagram */
+.social.instagram{
+    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4);
+}
+
+/* Mobile size */
+@media(max-width:768px){
+    .social{
+        width:40px;
+        height:40px;
+        font-size:18px;
+    }
+}
+
 </style>
 </head>
 <body>
@@ -485,7 +549,20 @@ auth.onAuthStateChanged(async user=>{
   <a href="profile.html" id="profileNav" style="display:none"><i class="fas fa-user"></i><span>حسابي</span></a>
   <a href="admin.html" id="adminNav" style="display:none"><i class="fas fa-cogs"></i><span>لوحة التحكم</span></a>
 </div>
+<!-- SOCIAL FLOATING -->
+<div class="social-float">
+  <a href="https://facebook.com" target="_blank" class="social facebook">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+
+  <a href="https://tiktok.com" target="_blank" class="social tiktok">
+    <i class="fab fa-tiktok"></i>
+  </a>
+
+  <a href="https://instagram.com" target="_blank" class="social instagram">
+    <i class="fab fa-instagram"></i>
+  </a>
+</div>
 
 </body>
 </html>
-
