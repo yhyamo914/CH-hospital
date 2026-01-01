@@ -27,32 +27,41 @@ const db = firebase.firestore();
 </script>
 
 <style>
-:root {
+:root{
     --primary:#4361ee;
     --secondary:#3a0ca3;
-    --light:#f8f9fa;
-    --dark:#212529;
-    --radius:14px;
+    --bg:#f4f6fb;
+    --card:#ffffff;
+    --text:#212529;
+    --radius:16px;
 }
+
 *{box-sizing:border-box;font-family:'Segoe UI',Tahoma}
-body{margin:0;background:#f4f6fb}
+body{
+    margin:0;
+    background:linear-gradient(135deg,#eef2ff,#f8f9ff);
+    color:var(--text);
+}
 
 /* ===== Navbar ===== */
 .navbar{
-    background:white;
-    box-shadow:0 4px 20px rgba(0,0,0,.08);
+    background:#fff;
+    position:sticky;
+    top:0;
+    z-index:1000;
+    box-shadow:0 6px 25px rgba(0,0,0,.08);
 }
 .navbar .container{
     max-width:1200px;
     margin:auto;
-    padding:15px;
+    padding:15px 20px;
     display:flex;
     justify-content:space-between;
     align-items:center;
 }
 .logo{
     font-size:22px;
-    font-weight:700;
+    font-weight:800;
     color:var(--primary);
     text-decoration:none;
 }
@@ -63,102 +72,189 @@ body{margin:0;background:#f4f6fb}
 }
 .nav-links a{
     text-decoration:none;
-    color:var(--dark);
+    color:var(--text);
     font-weight:500;
+    padding:6px 10px;
+    border-radius:8px;
 }
-.nav-links a:hover{color:var(--primary)}
+.nav-links a:hover{
+    background:var(--primary);
+    color:#fff;
+}
 
-/* ===== Booking Card ===== */
+/* ===== Main Card ===== */
 .main{
     display:flex;
     justify-content:center;
-    margin-top:60px;
+    padding:40px 15px 120px;
 }
 .card{
-    background:white;
     width:100%;
-    max-width:600px;
+    max-width:620px;
+    background:var(--card);
     padding:35px;
-    border-radius:var(--radius);
-    box-shadow:0 15px 40px rgba(0,0,0,.12);
+    border-radius:22px;
+    box-shadow:0 20px 50px rgba(0,0,0,.12);
+    animation:fadeUp .6s ease;
+}
+@keyframes fadeUp{
+    from{opacity:0;transform:translateY(30px)}
+    to{opacity:1;transform:none}
 }
 .card h2{
     text-align:center;
     color:var(--primary);
     margin-bottom:25px;
 }
+
+/* ===== Form ===== */
 .form-group{
-    margin-bottom:15px;
+    margin-bottom:16px;
 }
 .form-group input,
 .form-group textarea{
     width:100%;
-    padding:14px;
-    border-radius:var(--radius);
-    border:1px solid #ccc;
+    padding:15px;
+    border-radius:14px;
+    border:1px solid #ddd;
     font-size:15px;
+    background:#fafafa;
+    transition:.3s;
 }
+.form-group input:focus,
+.form-group textarea:focus{
+    border-color:var(--primary);
+    background:#fff;
+    outline:none;
+    box-shadow:0 0 0 3px rgba(67,97,238,.15);
+}
+
+/* ===== Button ===== */
 button{
     width:100%;
-    padding:15px;
-    background:var(--primary);
+    padding:16px;
     border:none;
-    color:white;
+    border-radius:16px;
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:#fff;
     font-size:18px;
-    border-radius:var(--radius);
     cursor:pointer;
+    transition:.3s;
 }
-button:hover{background:var(--secondary)}
-.status{
-    text-align:center;
-    margin-top:20px;
-    font-weight:bold;
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 30px rgba(67,97,238,.4);
 }
+
+/* ===== Status ===== */
 .success{
-    color:#28a745;
-    text-align:center;
     display:none;
+    margin-top:15px;
+    text-align:center;
+    color:#22c55e;
+    font-weight:700;
 }
+.status{
+    margin-top:10px;
+    text-align:center;
+    font-weight:600;
+}
+
+/* ===== Social Floating ===== */
+.social-float{
+    position:fixed;
+    top:50%;
+    left:16px;
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    z-index:2000;
+}
+.social{
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,.3);
+    transition:.3s;
+}
+.social:hover{transform:scale(1.15)}
+.social.facebook{background:#1877f2}
+.social.tiktok{background:#000}
+.social.instagram{
+    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4);
+}
+
+/* ===== Bottom Nav ===== */
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    background:#fff;
+    display:flex;
+    justify-content:space-around;
+    padding:8px 0;
+    box-shadow:0 -6px 20px rgba(0,0,0,.1);
+    z-index:1500;
+}
+.bottom-nav a{
+    text-decoration:none;
+    color:#555;
+    font-size:12px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+}
+.bottom-nav a i{
+    font-size:18px;
+    color:var(--primary);
+}
+
+/* ===== Mobile ===== */
+@media(max-width:768px){
+    .nav-links{display:none}
+    .card{padding:25px}
+}
+/* إخفاء الشريط السفلي في الديسكتوب */
+@media (min-width: 769px){
+    .bottom-nav{
+        display:none !important;
+    }
+}
+
 </style>
 </head>
+
 <body>
 
-<!-- ===== Navbar ===== -->
 <nav class="navbar">
-    <div class="container">
-        <a href="index.html" class="logo">متجر الكمبيوتر</a>
-        <ul class="nav-links">
-            <li><a href="index.html">الرئيسية</a></li>
-            <li><a href="products.html">المنتجات</a></li>
-            <li><a href="appointment.html">حجز موعد</a></li>
-            <li><a href="profile.html">الملف الشخصي</a></li>
-        </ul>
-    </div>
+<div class="container">
+    <a href="index.html" class="logo">CH-hospital </a>
+    <ul class="nav-links">
+        <li><a href="index.html">الرئيسية</a></li>
+        <li><a href="products.html">المنتجات</a></li>
+        <li><a href="appointment.html">حجز موعد</a></li>
+        <li><a href="profile.html">الملف الشخصي</a></li>
+    </ul>
+</div>
 </nav>
 
-<!-- ===== Booking Form ===== -->
 <div class="main">
 <div class="card">
     <h2><i class="fa fa-calendar-check"></i> حجز موعد</h2>
 
-    <div class="form-group">
-        <input type="text" id="name" placeholder="الاسم الكامل">
-    </div>
-    <div class="form-group">
-        <input type="email" id="email" placeholder="البريد الإلكتروني">
-    </div>
-    <div class="form-group">
-        <input type="tel" id="phone" placeholder="رقم الهاتف">
-    </div>
-    <div class="form-group">
-        <input type="date" id="date">
-    </div>
-    <div class="form-group">
-        <input type="time" id="time">
-    </div>
-    <div class="form-group">
-        <textarea id="notes" rows="4" placeholder="ملاحظات إضافية"></textarea>
-    </div>
+    <div class="form-group"><input type="text" id="name" placeholder="الاسم الكامل"></div>
+    <div class="form-group"><input type="email" id="email" placeholder="البريد الإلكتروني"></div>
+    <div class="form-group"><input type="tel" id="phone" placeholder="رقم الهاتف"></div>
+    <div class="form-group"><input type="date" id="date"></div>
+    <div class="form-group"><input type="time" id="time"></div>
+    <div class="form-group"><textarea id="notes" rows="4" placeholder="ملاحظات إضافية"></textarea></div>
 
     <button onclick="bookAppointment()">تأكيد الحجز</button>
 
@@ -167,6 +263,24 @@ button:hover{background:var(--secondary)}
 </div>
 </div>
 
+<!-- Social -->
+<div class="social-float">
+  <a href="https://facebook.com" class="social facebook"><i class="fab fa-facebook-f"></i></a>
+  <a href="https://tiktok.com" class="social tiktok"><i class="fab fa-tiktok"></i></a>
+  <a href="https://instagram.com" class="social instagram"><i class="fab fa-instagram"></i></a>
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <a href="index.html"><i class="fas fa-home"></i><span>الرئيسية</span></a>
+  <a href="products.html"><i class="fas fa-laptop"></i><span>المنتجات</span></a>
+  <a href="cart.html"><i class="fas fa-shopping-cart"></i><span>العربة</span></a>
+  <a href="appointment.html"><i class="fas fa-calendar"></i><span>موعد</span></a>
+  <a href="profile.html"><i class="fas fa-user"></i><span>حسابي</span></a>
+  <a href="admin.html" style="display:none"><i class="fas fa-cogs"></i><span>لوحة التحكم</span></a>
+</div>
+
+<!-- ⚠️ JavaScript كما هو بدون أي تعديل -->
 <script>
 auth.onAuthStateChanged(user=>{
     if(!user){
@@ -226,5 +340,6 @@ async function loadStatus(uid){
     }
 }
 </script>
+
 </body>
 </html>
